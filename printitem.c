@@ -1,4 +1,4 @@
-/* Duskul version 0.1.3,  2018.05.31,   Takeshi Ogihara, (C) 2018 */
+/* Duskul version 0.1.4,  2018.06.07,   Takeshi Ogihara, (C) 2018 */
 #include <stdlib.h>
 #include <string.h>
 #include "abort_imp.h"
@@ -31,7 +31,7 @@ void itemToString(char *buffer, const item *p)
         case tok_num:
             sprintf(buffer, "[int %ld]", p->a.value); break;
         case tok_str:
-            str = shorten(literalString(p->offset), 20);
+            str = shorten(literalString((int)p->a.value), 20);
             sprintf(buffer, "[string \"%s\"]", str); break;
         default:
             if (t < combined_symbol_0)

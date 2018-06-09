@@ -1,4 +1,4 @@
-/* Duskul version 0.1.3,  2018.05.31,   Takeshi Ogihara, (C) 2018 */
+/* Duskul version 0.1.4,  2018.06.07,   Takeshi Ogihara, (C) 2018 */
 #include <stdio.h>
 #include "getitem.h"
 #include "symset.h"
@@ -6,7 +6,7 @@
 #include "statements.h"
 #include "abort.h"
 #include "execute.h"
-#define  VERSION    "0.1.3"
+#define  VERSION    "0.1.4"
 
 /// Call several functions for initialization at once
 static void initialize(void)
@@ -51,6 +51,7 @@ int main(int argc, char **argv)
     initialize();
     int mainindex = parseProgram();
     freeTextBuffer(stdtxin);
+    stdtxin = NULL;
     if (!runflag)
         return code;
 

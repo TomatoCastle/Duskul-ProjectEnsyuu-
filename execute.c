@@ -1,4 +1,4 @@
-/* Duskul version 0.1.1,  2018.03.13,   Takeshi Ogihara, (C) 2018 */
+/* Duskul version 0.1.4,  2018.06.08,   Takeshi Ogihara, (C) 2018 */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -35,9 +35,11 @@ static void execAssign(const assignnode *asp)
 
 static void execReturn(const assignnode *asp)
 {
-    if (asp->global)
+    if (asp->global) {
         evaluate(asp->expr);
-    rtnvalue = stack[sp++];
+        rtnvalue = stack[sp++];
+    }else
+        rtnvalue = 0;
 }
 
 static ex_condition execIf(const ifnode *ifptr, int count)

@@ -1,4 +1,4 @@
-/* Duskul version 0.1.3,  2018.05.31,   Takeshi Ogihara, (C) 2018 */
+/* Duskul version 0.1.4,  2018.06.07,   Takeshi Ogihara, (C) 2018 */
 #include <stdio.h>
 #include <stdlib.h>
 #include "getitem.h"
@@ -13,6 +13,7 @@ static void abortMessage_string(const char *msg, const char *str)
     if (stdtxin) {
         printTextBuffer(stderr, stdtxin);
         freeTextBuffer(stdtxin);
+        stdtxin = NULL;
     }
     exit(1); // === EXIT THE PROGRAM ===
 }
