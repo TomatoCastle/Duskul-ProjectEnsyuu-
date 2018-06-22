@@ -16,7 +16,7 @@ symset_t end_set;
 static symset_t afterthen_set, stat_set, rtn_set;
 
 void statInitialize(void)
-{
+{//starend,rtn,aterthenの役割を果たすシンボルを集合にしている。
     // C99 style literal
     stat_set = symsetCreate((token_t[]){
         tok_id, sym_call, sym_if, sym_while, sym_for, sym_print,
@@ -36,11 +36,11 @@ static stnode *ifStatement(void)
     item s;
     int index = 0;
     do {
-        buffer[index].expr = expression();
+        buffer[index].expr = expression();//式を入れている。
         s = getItem();
         if (s.token != sym_then)
             abortMessageWithToken("no then", &s);
-        buffer[index].body = codeblock(afterthen_set, false);
+        buffer[index].body = codeblock(afterthen_set, false);//bodyの中にif文の中のnodeが入る。
         if (++index >= MAX_IF_SEQ - 1)
             abortMessageWithString("many if", "elsif");
         s = getItem();
@@ -56,7 +56,7 @@ static stnode *ifStatement(void)
         ifp->clause[x] = buffer[x];
     return stp;
 }
-
+//whileぶんの構文解析を行う部分。
 static stnode *whileStatement(void)
 {
     stnode *stp = newNode(node_while);
@@ -71,7 +71,7 @@ static stnode *whileStatement(void)
     currentBreakNest--;
     return stp;
 }
-
+//call文の解析を行う部分。mian関数の追加はここをさんこうにしてc言語のmain関数に、ぽいって投げるか、functionぶんにぽいってなゲル化すると、効果的な気がする。
 static stnode *callStatement(void)
 {
     item pr = getItem();
@@ -85,7 +85,7 @@ static stnode *callStatement(void)
     expressionList(anp->p.xlist, num);
     return stp;
 }
-
+//print文の解析を行う部分。
 static stnode *printStatement(int sym)
 {
     expnode *buffer[PARAM_MAX];
@@ -143,8 +143,8 @@ stnode *fetchStatement(item ahead)
 // 文列：終わりを表すトークンの集合を第１引数に与える。終わりのトークンは ungetItem() される。
 stnode *codeblock(symset_t termset, bool rtnflag)
 {
-    stnode *root = NULL;
-    stnode **statmp = &root;
+    stnode *root = NULL; //nodeの先頭部分の場所を表すポインタ
+    stnode **statmp = &root;//現在対象としているノードを入れるポインタ　初期値は先頭root
     stnode *nodp = NULL;
     symset_t exit_set = termset;        // sym_end or sym_elsif, etc.
     symsetUnion(&exit_set, rtn_set);    // += sym_return, sym_break
@@ -163,10 +163,11 @@ stnode *codeblock(symset_t termset, bool rtnflag)
     bool has_rtn = false;
     if (s.token == sym_return || s.token == sym_break) {
         if (s.token == sym_break) {
-            if (currentBreakNest == 0)
+            //breakであった場合
+            if (currentBreakNest == 0)//コードの深さがない。(抜ける対象がない。)
                 abortMessage("illegal break");
             nodp = newNode(node_break);
-        }else { // sym_return
+        }else { // sym_returnであったばあい
             nodp = returnStatement(termset);
             has_rtn = true;
         }
