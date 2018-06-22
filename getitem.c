@@ -10,40 +10,41 @@
 static item unget_store;
 static int unget_flag = false;
 
-void ungetItem(item s)
+void ungetItem(item s)//おそらく最後に実行するもので、２回実行したらエラーとなる関数
 {
     assert(unget_flag == false);
     unget_store = s;
     unget_flag = true;
 }
-
+//ここで、変数が宣言されているか確認する。ｇ
 /// if currentOnly: not search the global table for the identifier.
 ///     New identifier may be added to the current table.
 /// else: the global table is also used.  No identifier is added.
 static item get_identifier(int ch, bool currentOnly, TIN *tip)
 {
     int index = 0;
-    char buf[IDENTMAX];
+    char buf[IDENTMAX];//文字列
     int cc, attr;
 
     buf[index++] = ch;
-    cc = nextch(tip);
-    while ((attr = chAttribute(cc)) == ca_alpha || attr == ca_digit) {
+    cc = nextch(tip);//tip情報を元に、つぎの文字をとってくる
+    while ((attr = chAttribute(cc)) == ca_alpha || attr == ca_digit) {//トークンとなる文字の区切りを探してる
         if (index >= IDENTMAX - 1) {
             buf[IDENTMAX - 1] = 0;
             abortMessageWithString("long ident", buf);
         }
-        buf[index++] = cc;
-        cc = nextch(tip);
+        buf[index++] = cc;//バッファーに貯め込む
+        cc = nextch(tip);//次の文字を確認する
     }
     if (cc != EOF) undoch(cc, tip);
     buf[index] = 0;
-
-    item *ent = identifierSearch(buf, currentOnly);
+    /**/
+    item *ent = identifierSearch(buf, currentOnly);//おそらく、文字列を確認して、識別子(トークンの種類)が見つかればitemにそいつを入れる。
     if (ent == NULL) { // unknown id
         item s;
         if (!currentOnly) // Error
             abortMessageWithString("undef id", buf);
+        //新しい変数を作る処理
         s.token = tok_id;
         s.kind = id_undefined;
         s.a.entptr = idtableAdd(idtableCurrent, buf, id_new);
@@ -68,17 +69,17 @@ item fgetItem(TIN *tip, bool currentOnly) {
         attr = chAttribute(ch);
     }while (attr == ca_blank);
     switch (attr) {
-        case ca_sym:
+        case ca_sym://予約文字
             return getsymbol(ch, tip);
-        case ca_quot:
+        case ca_quot://コーテーションのことで文字列のとき
             s.token = tok_str;
             s.a.value = get_string(tip);
             return s;
-        case ca_digit:
+        case ca_digit://整数値の時
             s.token = tok_num;
             s.a.value = getnumber(ch, tip);
             return s;
-        case ca_alpha: return get_identifier(ch, currentOnly, tip);
+        case ca_alpha: return get_identifier(ch, currentOnly, tip);//変数名のときかな？
         default:
             break;
     }
@@ -88,7 +89,7 @@ item fgetItem(TIN *tip, bool currentOnly) {
     return s;
 }
 
-bool fgetEOF(TIN *tip) {
+bool fgetEOF(TIN *tip) {//EOFを取得できたどうか
     int ch;
     do {
         ch = nextch(tip);
