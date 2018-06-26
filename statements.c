@@ -140,7 +140,7 @@ stnode *fetchStatement(item ahead)
     return NULL;
 }
 
-// 文列：終わりを表すトークンの集合を第１引数に与える。終わりのトークンは ungetItem() される。
+//コードの中のブロックを解析して、適切なノードで返す関数。　ほとんどの関数でbodyの中に乖離地が入れられている。 文列：終わりを表すトークンの集合を第１引数に与える。終わりのトークンは ungetItem() される。
 stnode *codeblock(symset_t termset, bool rtnflag)
 {
     stnode *root = NULL; //nodeの先頭部分の場所を表すポインタ

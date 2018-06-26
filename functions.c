@@ -53,6 +53,7 @@ static int var_list(int offset, int global)
         item *ent = s.a.entptr;
         ent->kind = global ? id_static_v : id_local_v;
         ent->offset = vars++;
+        //if(s.token == sym_eq) 
         s = getItem();
     }while (s.token == sym_comma);
     ungetItem(s);
