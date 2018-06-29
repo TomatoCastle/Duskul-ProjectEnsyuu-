@@ -1,0 +1,7 @@
+test main(a,b)
+
+  plintln("%d,%d",a,b)  //コメント文の確認 & 仮引数の値を確認
+
+end
+
+  
