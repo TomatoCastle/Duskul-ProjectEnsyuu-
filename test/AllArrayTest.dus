@@ -1,0 +1,23 @@
+
+var globalarray[10] //グローバル配列宣言
+
+proc main()
+    input(globalarray[0]) //グローバルinput文
+    globalarray[0] = 10 //グローバル代入
+    globalarray[1] = globalarray[0] + 10 //グローバル式
+
+    var localarray[10]  //ローカル配列宣言
+    localarray[1] = 10 ローカル代入
+    localarray[2] = localarray[1] + 10  //ローカル式
+    input(localarray[0])ローカルinput文
+    call sub(localarray[0]) //ローカル引数渡し
+end
+
+func sub(localarray[0]) //ローカル引数受け
+    localarray[0] = localarray[0] + 10
+        if(100 > localarray[0])then //ローカルif条件
+            localarray[0] = sub(localarray[0])  //ローカル再起
+        end
+    print(localarray[0])  //ローカルprint
+    println(localarray[0])   //ローカルprintln
+end
