@@ -42,7 +42,7 @@ static int parameter_list(void)
 }
 
 // 変数宣言: 'var' が読まれてから呼び出される。',' が出現しなくなったら終わり。
-static int var_list(int offset, int global)
+int var_list(int offset, int global)
 {
     item s;
     int vars = offset;
@@ -116,7 +116,9 @@ static void funcDefine(bool isfunc)
     currentFuncIndex = fidx;
     currentBreakNest = 0;
     int porig = fip->params + CONTROL_INFO_SIZE;
+    // todo 変更する！！！
     int vars = porig;
+    
     item s = getItem();
     while (s.token == sym_var) {
         vars = var_list(vars, false);
@@ -124,7 +126,7 @@ static void funcDefine(bool isfunc)
     }
     ungetItem(s);
     valueIsReturned = isfunc;
-    fip->body = codeblock(end_set, valueIsReturned);
+    fip->body = fcodeblock(end_set, valueIsReturned,vars,1);
     fip->rtntype = isfunc;
     fip->localvars = vars - porig;  // number of local variables
     (void)getItem();

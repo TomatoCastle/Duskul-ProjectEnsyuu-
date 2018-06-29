@@ -9,6 +9,7 @@
 #include "idtable.h"
 
 #define PARAM_MAX    16
+#define codeblock(termset,rtnflag) fcodeblock(termset,rtnflag,0,0)
 
 struct _funcinfo;
 typedef struct _funcinfo  funcinfo;
@@ -19,9 +20,13 @@ extern int currentFuncIndex;
 extern int numberOfFunctions;
 extern int numberOfStaticVars;
 
+
 int parseProgram(void);
+int var_list(int offset, int global);
 
 /* statements.c */
 void statInitialize(void);
+
+
 
 #endif /* !__STATEMENTS_H__ */

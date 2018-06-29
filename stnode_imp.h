@@ -59,7 +59,7 @@ extern bool valueIsReturned;
 extern symset_t end_set;
 
 stnode *fetchStatement(item ahead);
-stnode *codeblock(symset_t termset, bool rtnflag);
+stnode *fcodeblock(symset_t termset, bool rtnflag, int vars,int isFuncBody);
 
 /* simplestat.c */
 stnode *assignStatement(item ahead, symset_t terminator);
