@@ -1,0 +1,4 @@
+var a = 3 + 4
+proc main()
+    print(a)
+end
