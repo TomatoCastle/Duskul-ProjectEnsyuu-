@@ -1,4 +1,4 @@
-/* Duskul version 0.1.4,  2018.06.08,   Takeshi Ogihara, (C) 2018 */
+/* Duskul version 0.1.1,  2018.03.13,   Takeshi Ogihara, (C) 2018 */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -35,11 +35,9 @@ static void execAssign(const assignnode *asp)
 
 static void execReturn(const assignnode *asp)
 {
-    if (asp->global) {
+    if (asp->global)
         evaluate(asp->expr);
-        rtnvalue = stack[sp++];
-    }else
-        rtnvalue = 0;
+    rtnvalue = stack[sp++];
 }
 
 static ex_condition execIf(const ifnode *ifptr, int count)
@@ -143,9 +141,9 @@ void subroutine(int index)
         abortMessage("stack overflow");
     while (locals--)
         stack[--sp] = 0;    // local vars
-
+    
     (void)execStatements(finf->body);
-
+    
     if (finf->rtntype) { // function
         sp = localbase;
         stack[sp] = rtnvalue;
@@ -156,11 +154,14 @@ void subroutine(int index)
 
 int executeProgram(int mainidx)
 {
+    //main関数の仮引数の数だけループ回して、スタックにargv(実引数)を入れる（？）
+    //paramsがmain関数の仮引数の数でL.164で0を代入してる
     stack = malloc(sizeof(long) * STACK_SIZE);
     globals = malloc(sizeof(long) * numberOfStaticVars);
     sp = STACK_SIZE;
     funcinfo *finf = functionsTable[mainidx];
     for (int i = 0; i < finf->params; i++)
+        //ここらへんでargvを入れる。paramsの数分だけループしてargvを代入。
         stack[--sp] = 0;      // dummy arguments
     subroutine(mainidx);
     int rtncode = (sp < STACK_SIZE) ? (int)(stack[sp]) : 0;
@@ -168,3 +169,4 @@ int executeProgram(int mainidx)
     free(globals);
     return rtncode;
 }
+
