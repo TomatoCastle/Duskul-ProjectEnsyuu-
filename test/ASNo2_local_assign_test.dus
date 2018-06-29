@@ -1,0 +1,11 @@
+proc local(a)
+    val b = 3
+    println(a,b)
+end
+
+proc main()
+    val a = 2
+    local(a)
+    local(a)
+    local(a)
+end
