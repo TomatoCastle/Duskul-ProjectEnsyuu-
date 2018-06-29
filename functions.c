@@ -119,14 +119,13 @@ static void funcDefine(bool isfunc)
     // todo 変更する！！！
     int vars = porig;
     
-    item s = getItem();
+    /*item s = getItem();
     while (s.token == sym_var) {
         vars = var_list(vars, false);
         s = getItem();
-    }
-    ungetItem(s);
+    }*/
     valueIsReturned = isfunc;
-    fip->body = fcodeblock(end_set, valueIsReturned,vars,1);
+    fip->body = fcodeblock(end_set, valueIsReturned,&vars,1);
     fip->rtntype = isfunc;
     fip->localvars = vars - porig;  // number of local variables
     (void)getItem();

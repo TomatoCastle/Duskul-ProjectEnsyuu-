@@ -141,7 +141,7 @@ stnode *fetchStatement(item ahead)
 }
 
 //コードの中のブロックを解析して、適切なノードで返す関数。　ほとんどの関数でbodyの中に乖離地が入れられている。 文列：終わりを表すトークンの集合を第１引数に与える。終わりのトークンは ungetItem() される。
-stnode* fcodeblock(symset_t termset, bool rtnflag,int vars,int isFuncBody)
+stnode* fcodeblock(symset_t termset, bool rtnflag,int* vars,int isFuncBody)
 {
     stnode *root = NULL; //nodeの先頭部分の場所を表すポインタ
     stnode **statmp = &root;//現在対象としているノードを入れるポインタ　初期値は先頭root
@@ -152,6 +152,14 @@ stnode* fcodeblock(symset_t termset, bool rtnflag,int vars,int isFuncBody)
     symsetUnion(&assign_set, stat_set); // += while, for, if, call, etc.
     
     //todo ここで値の容量確保を行う
+    if (isFuncBody == 1){
+        item s = getItem();
+        while (s.token == sym_var) {
+            *vars = var_list(*vars, false);
+            s = getItem();
+        }
+        ungetItem(s);
+    }
     /* */
     
     item s = getItem();
