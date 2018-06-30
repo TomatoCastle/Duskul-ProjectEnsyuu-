@@ -42,7 +42,7 @@ static int parameter_list(void)
 }
 
 // 変数宣言: 'var' が読まれてから呼び出される。',' が出現しなくなったら終わり。
-int var_list(int offset, int global)
+int var_list(int offset, int global, stnode* nodp, stnode** statmp, symset_t* assign_set)
 {
     item s;
     int vars = offset;
@@ -53,7 +53,11 @@ int var_list(int offset, int global)
         item *ent = s.a.entptr;
         ent->kind = global ? id_static_v : id_local_v;
         ent->offset = vars++;
-        //if(s.token == sym_eq) 
+        //if(s.token == sym_eq)
+        if(s.token == sym_eq && global == 0){ //ローカル変数である場合
+            nodp = assignStatement(s, *assign_set);
+            statmp = &nodp->next;
+        }
         s = getItem();
     }while (s.token == sym_comma);
     ungetItem(s);
@@ -156,7 +160,7 @@ int parseProgram(void)
             bool isfunc = BOOL(s.token == sym_func);
             funcDefine(isfunc);
         }else if (s.token == sym_var)
-            vars = var_list(vars, true);
+            vars = var_list(vars, true,0,0,0);
         else if (s.token == sym_decl)
             funcDeclare();
         else {

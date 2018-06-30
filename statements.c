@@ -155,7 +155,7 @@ stnode* fcodeblock(symset_t termset, bool rtnflag,int* vars,int isFuncBody)
     if (isFuncBody == 1){
         item s = getItem();
         while (s.token == sym_var) {
-            *vars = var_list(*vars, false);
+            *vars = var_list(*vars, false, nodp,statmp,0);
             s = getItem();
         }
         ungetItem(s);

@@ -11,6 +11,7 @@
 #define PARAM_MAX    16
 #define codeblock(termset,rtnflag) fcodeblock(termset,rtnflag,0,0)
 
+
 struct _funcinfo;
 typedef struct _funcinfo  funcinfo;
 
@@ -22,7 +23,7 @@ extern int numberOfStaticVars;
 
 
 int parseProgram(void);
-int var_list(int offset, int global);
+int var_list(int offset, int global, stnode* nodp, stnode** statmp,symset_t* assign_set);
 
 /* statements.c */
 void statInitialize(void);
