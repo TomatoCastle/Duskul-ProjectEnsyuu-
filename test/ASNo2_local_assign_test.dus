@@ -1,10 +1,10 @@
 proc local(a)
-    val b = 3
+    val b 
     println(a,b)
 end
 
 proc main()
-    val a = 2
+    val a 
     local(a)
     local(a)
     local(a)
