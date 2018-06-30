@@ -1,0 +1,4 @@
+var global[10]
+
+proc main()
+end
