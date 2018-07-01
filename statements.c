@@ -165,7 +165,7 @@ stnode* fcodeblock(symset_t termset, bool rtnflag,int* vars,int isFuncBody)
     item s = getItem();
     while (symsetHas(stat_set, s.token)) {
         nodp = (s.token == tok_id)
-             ? assignStatement(s, assign_set) : fetchStatement(s);
+             ? assignStatement(s, assign_set) : fetchStatement(s);//ここ、ファンクションやノニ、アサインステイトメントに行ってしまう。なぜだろう。
         *statmp = nodp;
         statmp = &nodp->next;
         s = getItem();
