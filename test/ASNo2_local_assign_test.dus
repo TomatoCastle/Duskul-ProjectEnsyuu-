@@ -1,11 +1,11 @@
-proc local(a)
-    var b  = 5
+func local(a)
+    var b
+    b = 4
     println(a,b)
+    return b
 end
 
 proc main()
-    var a = 7
-    local(a)
-    local(a)
-    local(a)
+    var a = 5
+    a = local(a)
 end

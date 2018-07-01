@@ -54,10 +54,12 @@ int var_list(int offset, int global, stnode* nodp, stnode** statmp, symset_t* as
         ent->kind = global ? id_static_v : id_local_v;
         ent->offset = vars++;
         //if(s.token == sym_eq)
+        item temp = s;
         s = getItem();
         if(s.token == sym_eq && global == 0){ //ローカル変数である場合 代入
             ungetItem(s);
-            nodp = assignStatement(*ent, *assign_set);
+            nodp = assignStatement(temp, *assign_set);
+            *statmp = nodp;
             statmp = &nodp->next;
             s = getItem();
         }else{
