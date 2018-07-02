@@ -14,7 +14,6 @@ static void chechAssignment(idkind kind, const char *str)
         case id_proc:
             abortMessageWithString("assign func", str); break;
         case id_undefined:
-            break; //変数代入するために。s
         case id_new:
             abortMessageWithString("undef id", str); break;
         default:
