@@ -42,26 +42,31 @@ static int parameter_list(void)
 }
 
 // 変数宣言: 'var' が読まれてから呼び出される。',' が出現しなくなったら終わり。
-int var_list(int offset, int global, stnode* nodp, stnode** statmp, symset_t* assign_set)
+int var_list(int offset, int global, stnode* nodp, stnode*** statmp, symset_t* assign_set)
 {
     item s;
     int vars = offset;
     do {
         s = getItemLocal();
+        symset_t connma_and_assign_set = symsetCreate((token_t[]){sym_comma,sym_var});
+        symsetUnion(&connma_and_assign_set, *assign_set);
         if (s.token != tok_id) abortMessage("no id");
         if (s.kind != id_undefined) abortMessage("id conflict");
+        
         item *ent = s.a.entptr;
         ent->kind = global ? id_static_v : id_local_v;
         ent->offset = vars++;
         //if(s.token == sym_eq)
+       // item bfs = s; //前の奴を残しておく
         s = getItem();
         if(s.token == sym_eq && global == 0){ //ローカル変数である場合 代入
             ungetItem(s);
-            nodp = assignStatement(*ent, *assign_set);
-            statmp = &nodp->next;
+            nodp = assignStatement(*ent, connma_and_assign_set);
+            /* *statmp = nodp;
+            statmp = &nodp->next;*/
+             **statmp = nodp;
+             *statmp = &nodp->next;
             s = getItem();
-        }else{
-            ungetItem(s);
         }
        
     }while (s.token == sym_comma);

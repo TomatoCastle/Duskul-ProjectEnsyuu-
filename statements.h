@@ -23,7 +23,7 @@ extern int numberOfStaticVars;
 
 
 int parseProgram(void);
-int var_list(int offset, int global, stnode* nodp, stnode** statmp,symset_t* assign_set);
+int var_list(int offset, int global, stnode* nodp, stnode*** statmp,symset_t* assign_set);
 
 /* statements.c */
 void statInitialize(void);

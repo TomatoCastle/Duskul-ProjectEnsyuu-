@@ -1,11 +1,12 @@
 proc local(a)
-    var b  = 5
-    println(a,b)
+    var b  = 5, c = 8
+    println(a,b,c)
 end
 
 proc main()
     var a = 7
-    local(a)
-    local(a)
-    local(a)
+    var b = 999
+    call local(a)
+    call local(a)
+    call local(a)
 end
