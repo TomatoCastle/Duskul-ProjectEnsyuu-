@@ -1,4 +1,5 @@
-var a = 1,b = 5
+var a = 1, b = 5, c
 proc main()
-    println(a,b)
+    c= 6
+    println(a,b,c)
 end
