@@ -17,8 +17,8 @@ int currentFuncIndex = 0;
 int numberOfFunctions = 0;
 int numberOfStaticVars = 0;
 
-global_var_assing_tmp* root = NULL; //nodeの先頭部分の場所を表すポインタ
-global_var_assing_tmp** varasstmp = &root;//現在対象としているglobalのあれ。
+global_var_assing_tmp* tmproot = NULL; //nodeの先頭部分の場所を表すポインタ
+global_var_assing_tmp** varasstmp = &tmproot;//現在対象としているglobalのあれ。
 
 // 仮引数列: '(' が読まれてから呼び出される。最後の ')' は読む。
 static int parameter_list(void)
@@ -95,7 +95,7 @@ int var_list(int offset, int global, stnode* nodp, stnode*** statmp, symset_t* a
                 else (*varasstmp)->value = s.a.value;
                 (*varasstmp)->index=vars-1;
                 (*varasstmp)->next = malloc(sizeof(global_var_assing_tmp));
-                *varasstmp = (*varasstmp)->next;
+                varasstmp = &(*varasstmp)->next;
                 (*varasstmp)->next = NULL;
                 (*varasstmp)->index=0;
             } else {
@@ -214,12 +214,13 @@ int parseProgram(void)
     }
     numberOfStaticVars = vars;
     globals = malloc(sizeof(long) * numberOfStaticVars);//ここで、グローバル変数の容量確保。
-    //ここでなぜか失敗している。NULLが必ず入ってる...なぜだ...
-    varasstmp = &root;
-    while (root != NULL && (*varasstmp)->next != NULL){
+    
+    varasstmp = &tmproot;
+    while (tmproot != NULL && (*varasstmp)->next != NULL){
         globals[(*varasstmp)->index] = (*varasstmp)->value;
         *varasstmp = (*varasstmp)->next;
     }
+    //todo後片付けする
     
     int mainindex = -1;
     for (int i = 0; i < numberOfFunctions; i++) {
