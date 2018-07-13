@@ -42,18 +42,33 @@ static int parameter_list(void)
 }
 
 // 変数宣言: 'var' が読まれてから呼び出される。',' が出現しなくなったら終わり。
-static int var_list(int offset, int global)
+int var_list(int offset, int global, stnode* nodp, stnode*** statmp, symset_t* assign_set)
 {
     item s;
     int vars = offset;
     do {
         s = getItemLocal();
+        symset_t connma_and_assign_set = symsetCreate((token_t[]){sym_comma,sym_var});
+        symsetUnion(&connma_and_assign_set, *assign_set);
         if (s.token != tok_id) abortMessage("no id");
         if (s.kind != id_undefined) abortMessage("id conflict");
+        
         item *ent = s.a.entptr;
         ent->kind = global ? id_static_v : id_local_v;
         ent->offset = vars++;
+        //if(s.token == sym_eq)
+       // item bfs = s; //前の奴を残しておく
         s = getItem();
+        if(s.token == sym_eq && global == 0){ //ローカル変数である場合 代入
+            ungetItem(s);
+            nodp = assignStatement(*ent, connma_and_assign_set);
+            /* *statmp = nodp;
+            statmp = &nodp->next;*/
+             **statmp = nodp;
+             *statmp = &nodp->next;
+            s = getItem();
+        }
+       
     }while (s.token == sym_comma);
     ungetItem(s);
     return vars;
@@ -115,15 +130,16 @@ static void funcDefine(bool isfunc)
     currentFuncIndex = fidx;
     currentBreakNest = 0;
     int porig = fip->params + CONTROL_INFO_SIZE;
+    // todo 変更する！！！
     int vars = porig;
-    item s = getItem();
+    
+    /*item s = getItem();
     while (s.token == sym_var) {
         vars = var_list(vars, false);
         s = getItem();
-    }
-    ungetItem(s);
+    }*/
     valueIsReturned = isfunc;
-    fip->body = codeblock(end_set, valueIsReturned);
+    fip->body = fcodeblock(end_set, valueIsReturned,&vars,1);
     fip->rtntype = isfunc;
     fip->localvars = vars - porig;  // number of local variables
     (void)getItem();
@@ -154,7 +170,7 @@ int parseProgram(void)
             bool isfunc = BOOL(s.token == sym_func);
             funcDefine(isfunc);
         }else if (s.token == sym_var)
-            vars = var_list(vars, true);
+            vars = var_list(vars, true,0,0,0);
         else if (s.token == sym_decl)
             funcDeclare();
         else {
