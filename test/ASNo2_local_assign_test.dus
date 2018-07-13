@@ -1,11 +1,12 @@
 proc local(a)
-    val b = 3
-    println(a,b)
+    var b  = 5, c = 8
+    println(a,b,c)
 end
 
 proc main()
-    val a = 2
-    local(a)
-    local(a)
-    local(a)
+    var a = 7
+    var b = 999
+    call local(a)
+    call local(a)
+    call local(a)
 end

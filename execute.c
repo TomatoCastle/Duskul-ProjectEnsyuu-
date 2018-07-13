@@ -155,7 +155,7 @@ void subroutine(int index)
 int executeProgram(int mainidx)
 {
     stack = malloc(sizeof(long) * STACK_SIZE);
-    globals = malloc(sizeof(long) * numberOfStaticVars);
+    //globals = malloc(sizeof(long) * numberOfStaticVars);
     sp = STACK_SIZE;
     funcinfo *finf = functionsTable[mainidx];
     for (int i = 0; i < finf->params; i++)
