@@ -1,6 +1,7 @@
-//a
-proc main(a,b)
+
+proc main(a,b,c)
   print(" ",a)
-  print(" ",b)  
+  print(" ",b)
+  print(" ",c)
 
 end
