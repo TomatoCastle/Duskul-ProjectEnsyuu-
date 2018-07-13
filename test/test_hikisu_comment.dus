@@ -1,5 +1,7 @@
-test main(a,b)
 
-  plintln(" "  " " ,a,b)  //コメント文の確認 & 仮引数の値を確認
+proc main(a,b,c)
+  print(" ",a)
+  print(" ",b)
+  print(" ",c)
 
 end

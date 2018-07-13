@@ -56,13 +56,27 @@ static item get_identifier(int ch, bool currentOnly, TIN *tip)
 /// Get a token from the source program.
 /// if currentOnly: not search the global table for the identifier.
 item fgetItem(TIN *tip, bool currentOnly) {
+    
     if (unget_flag) {
         unget_flag = false;
         return unget_store;
     }
+    
+    int ch = nextch(tip);
+    if(ch == '/'){
+        ch = nextch(tip);
+        if(ch == '/'){
+            while(ch != EOF && ch != '\n'){
+                ch = nextch(tip);
+            }
+        }
+        else{
+            abortMessage("illegal statment");
+        }
+    }
+    undoch(ch,tip);
 
     item s;
-    int ch;
     chattr_t attr;
     do {
         ch = nextch(tip);
