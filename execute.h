@@ -4,7 +4,7 @@
 
 struct _expnode;
 
-int executeProgram(int mainidx);
+int executeProgram(int mainidx, int argc, char **argv, int ac);
 void evaluate(const struct _expnode *expptr);
 
 #endif /* __EXECUTE_H__ */

@@ -152,15 +152,20 @@ void subroutine(int index)
     localbase = localbase_save;
 }
 
-int executeProgram(int mainidx)
+int executeProgram(int mainidx, int argc, char **argv, int ac)
 {
     stack = malloc(sizeof(long) * STACK_SIZE);
     //globals = malloc(sizeof(long) * numberOfStaticVars);
     sp = STACK_SIZE;
     funcinfo *finf = functionsTable[mainidx];
-    for (int i = 0; i < finf->params; i++)
-        
-        stack[--sp] = 0;      // dummy arguments
+    for (int i = 0; i < finf->params; i++){
+        if (ac < argc){
+            stack[--sp] = atoi(argv[ac++]);
+        }
+        else{
+            stack[--sp] = 0;      // dummy arguments
+        }
+    }
     subroutine(mainidx);
     int rtncode = (sp < STACK_SIZE) ? (int)(stack[sp]) : 0;
     free(stack);

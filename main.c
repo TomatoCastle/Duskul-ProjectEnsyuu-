@@ -57,6 +57,6 @@ int main(int argc, char **argv)
 
     if (mainindex < 0)
         abortMessage("no main");
-    code = executeProgram(mainindex);
+    code = executeProgram(mainindex, argc,argv,++ac);
     return code;
 }
