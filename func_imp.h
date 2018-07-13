@@ -14,5 +14,15 @@ struct _funcinfo {
     short          params;      // number of parameters
     short          localvars;   // number of local variables
 };
+extern long *globals;
+
+
+//グローバル変数宣言と同時代入用の構造体
+typedef struct _global_var_assing_tmp {
+    long value;//値
+    long index;//globalvarsの添字
+    struct _global_var_assing_tmp* next;
+}global_var_assing_tmp;
+
 
 #endif /* !__FUNC_IMP_H__ */

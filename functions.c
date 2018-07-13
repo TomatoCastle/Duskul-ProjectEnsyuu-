@@ -17,6 +17,9 @@ int currentFuncIndex = 0;
 int numberOfFunctions = 0;
 int numberOfStaticVars = 0;
 
+global_var_assing_tmp* tmproot = NULL; //nodeの先頭部分の場所を表すポインタ
+global_var_assing_tmp** varasstmp = &tmproot;//現在対象としているglobalのあれ。
+
 // 仮引数列: '(' が読まれてから呼び出される。最後の ')' は読む。
 static int parameter_list(void)
 {
@@ -46,10 +49,19 @@ int var_list(int offset, int global, stnode* nodp, stnode*** statmp, symset_t* a
 {
     item s;
     int vars = offset;
+    
+    if(global == 1){
+        *varasstmp = malloc(sizeof(global_var_assing_tmp));
+        (*varasstmp)->next = NULL;
+        (*varasstmp)->index=0;
+    }
+
     do {
         s = getItemLocal();
         symset_t connma_and_assign_set = symsetCreate((token_t[]){sym_comma,sym_var});
+        if(global == 0){
         symsetUnion(&connma_and_assign_set, *assign_set);
+        }
         if (s.token != tok_id) abortMessage("no id");
         if (s.kind != id_undefined) abortMessage("id conflict");
         
@@ -57,15 +69,37 @@ int var_list(int offset, int global, stnode* nodp, stnode*** statmp, symset_t* a
         ent->kind = global ? id_static_v : id_local_v;
         ent->offset = vars++;
         //if(s.token == sym_eq)
-       // item bfs = s; //前の奴を残しておく
         s = getItem();
-        if(s.token == sym_eq && global == 0){ //ローカル変数である場合 代入
+        if(s.token == sym_eq && global == 0){ //ローカル変数である場合 代入するためのノード作成
             ungetItem(s);
             nodp = assignStatement(*ent, connma_and_assign_set);
             /* *statmp = nodp;
             statmp = &nodp->next;*/
              **statmp = nodp;
              *statmp = &nodp->next;
+            s = getItem();
+        }
+        
+        if(s.token == sym_eq && global == 1){//グローバル変数である場合である場合に、代入するためのデータをリスト形式で残す。
+            int minus_flg=0;
+            s = getItem();
+            if(s.token == sym_plus){
+                s = getItem();
+            }else if(s.token == sym_minus){
+                minus_flg = 1;
+                s = getItem();
+            }
+            if(s.token ==  tok_num){
+                if(minus_flg == 1) (*varasstmp)->value = -1 * s.a.value;
+                else (*varasstmp)->value = s.a.value;
+                (*varasstmp)->index=vars-1;
+                (*varasstmp)->next = malloc(sizeof(global_var_assing_tmp));
+                varasstmp = &(*varasstmp)->next;
+                (*varasstmp)->next = NULL;
+                (*varasstmp)->index=0;
+            } else {
+                abortMessageWithToken("wrong exp", &s);
+            }
             s = getItem();
         }
        
@@ -130,14 +164,7 @@ static void funcDefine(bool isfunc)
     currentFuncIndex = fidx;
     currentBreakNest = 0;
     int porig = fip->params + CONTROL_INFO_SIZE;
-    // todo 変更する！！！
     int vars = porig;
-    
-    /*item s = getItem();
-    while (s.token == sym_var) {
-        vars = var_list(vars, false);
-        s = getItem();
-    }*/
     valueIsReturned = isfunc;
     fip->body = fcodeblock(end_set, valueIsReturned,&vars,1);
     fip->rtntype = isfunc;
@@ -178,7 +205,18 @@ int parseProgram(void)
         }
     }
     numberOfStaticVars = vars;
-
+    globals = malloc(sizeof(long) * numberOfStaticVars);//ここで、グローバル変数の容量確保。
+    
+    //こっから初期化と同時の代入を行います
+    varasstmp = &tmproot;
+    while (tmproot != NULL && (*varasstmp)->next != NULL){
+        globals[(*varasstmp)->index] = (*varasstmp)->value;
+        global_var_assing_tmp** temp_bf = varasstmp;
+        *varasstmp = (*varasstmp)->next;
+        free(*temp_bf);//申し訳程度に容量解放
+    }
+    
+    
     int mainindex = -1;
     for (int i = 0; i < numberOfFunctions; i++) {
         const char *name = functionsTable[i]->ident;
