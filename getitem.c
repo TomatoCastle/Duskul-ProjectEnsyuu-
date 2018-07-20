@@ -62,24 +62,28 @@ item fgetItem(TIN *tip, bool currentOnly) {
         return unget_store;
     }
     
-    int ch = nextch(tip);
-    if(ch == '/'){
-        ch = nextch(tip);
-        if(ch == '/'){
-            while(ch != EOF && ch != '\n'){
-                ch = nextch(tip);
-            }
-        }
-        else{
-            abortMessage("illegal statment");
-        }
-    }
-    undoch(ch,tip);
+    int ch; //= nextch(tip);
+   
 
     item s;
     chattr_t attr;
     do {
         ch = nextch(tip);
+        
+        if(ch == '/'){
+            ch = nextch(tip);
+            if(ch == '/'){
+                while(ch != EOF && ch != '\n'){
+                    ch = nextch(tip);
+                }
+            }
+            else{
+                abortMessage("illegal statment");
+            }
+        }
+        
+      //  undoch(ch,tip);
+        
         attr = chAttribute(ch);
     }while (attr == ca_blank);
     switch (attr) {
