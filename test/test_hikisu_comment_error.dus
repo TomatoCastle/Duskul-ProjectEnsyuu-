@@ -1,6 +1,6 @@
 
 proc main(a,b,c)
-  print(" ",a) //テスト
+  print(" ",a)/ /テストなり。
   print(" ",b)
   print(" ",c)// テスト
 
