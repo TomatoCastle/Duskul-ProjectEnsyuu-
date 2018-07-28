@@ -9,7 +9,7 @@
 
 ・//でコメントができます。(ただし文末で行うとエラーが発生するバグを抱えています。)
 
-##　Installation
+## Installation
 
 ・`git clone`します
 
